@@ -7,6 +7,11 @@ import subprocess
 
 #debo revisar el sistema operativo. 
 
+def command_runner(command):
+    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr  = process.communicate()
+    return (stdout.decode('utf-8'), stderr.decode('utf-8'))
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", action="store_const", const="True")
 parser.add_argument("-m", action="store_const", const="True")
@@ -16,44 +21,36 @@ parser.add_argument("-l", action="store_const", const="True")
 parser.add_argument("-i", action="store_const", const="True")
 
 args = parser.parse_args()
+
 if args.d: 
-    process = subprocess.Popen(['uname', '-a'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    print(f'Information of kernel:\n{stdout.decode('utf-8')}')
+    stdout, stderr = command_runner(command='uname -a')
+    print(f'Information of kernel:\n{stdout}')
+
 if args.m: 
-    command = "sysctl vm.swapusage | awk '{print $2, $3, $4, $5, $6, $7, $8, $9, $10}'"
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate() 
-    print(f'Information of RAM Memory:\n{stdout.decode('utf-8')}')
+    stdout, stderr = command_runner(command="sysctl vm.swapusage | awk '{print $2, $3, $4, $5, $6, $7, $8, $9, $10}'")
+    print(f'Information of RAM Memory (MB):\n{stdout}')
+
 if args.c: 
-    command = 'sysctl -n machdep.cpu.brand_string' #modelo
-    answer = ''
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    answer += f'Model = {stdout.decode('utf-8')}'
+    stdout, stderr = command_runner(command='sysctl -n machdep.cpu.brand_string')
+    print(f'Model = {stdout}')
 
-    command = 'sysctl -n machdep.cpu.core_count' #cores
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    answer += f'Number of Cores = {stdout.decode('utf-8')}'
+    stdout, stderr = command_runner(command='sysctl -n machdep.cpu.core_count')
+    print(f'Number of Cores = {stdout}')
 
-    command = 'sysctl -n machdep.cpu.thread_count' #Threads
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    answer += f'Threads = {stdout.decode('utf-8')}'
+    stdout, stderr = command_runner(command='sysctl -n machdep.cpu.thread_count')
+    print(f'Threads = {stdout}')
 
-    command = 'echo "$(echo "$(sysctl -n hw.cpufrequency) / 1000000000" | bc -l) GHz"' #Frecuency
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    answer += f'Threads = {stdout.decode('utf-8')}'
-
-    print(f'CPU information:\n',answer)
+    stdout, stderr = command_runner(command='echo "$(echo "$(sysctl -n hw.cpufrequency) / 1000000000" | bc -l) GHz"')
+    print(f'Frecuency = {stdout}')
 
 if args.u: 
-    command = 'whoami' #Frecuency
-    process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    print(f'Current user: ', stdout.decode('utf-8'))
-    
-if args.l: print("load average")
-if args.i: print("IP address")
+    stdout, stderr = command_runner(command='whoami')
+    print(f'Current user: ', stdout)
+
+if args.l: 
+    stdout, stderr = command_runner(command="uptime | awk '{print $11, $12, $13}'")
+    print(f'Load average: ', stdout)
+
+if args.i: 
+    stdout, stderr = command_runner(command="ipconfig getifaddr en0")
+    print(f'External IP address: ', stdout)
