@@ -23,6 +23,7 @@ headers = {
     'Authorization': f'Bearer {access_key}'
     }
 
+internal_ids = {}
 #Si hay un error de conexion debe cachar el error y mandar un mensaje a consola/ 
 #Consultar la lista de surveys existentes. 
 if args.l:
@@ -127,14 +128,15 @@ if args.c:
     #Creating survey 
     try:
         survey_json_parsed = json.dumps(survey)
-        conn.request("POST", "/v3/surveys", survey_json_parsed, headers)
+        conn.request("POST", "/v3/surveys", survey_json_parsed, headers=headers)
         res = conn.getresponse()
         data = res.read()
         if res.status != 201: raise Exception("Something went wrong creating the survey :(")
         data_parsed = json.loads(data.decode('utf-8'))
 
-        print(data_parsed) 
-        #Necesito almacenar el id y el collect_url 
+        print(data_parsed)
+        internal_ids['survey_id'] = data_parsed['id']
+        print("New survey created successfuly.")
 
     except Exception as err:
         print(err)
