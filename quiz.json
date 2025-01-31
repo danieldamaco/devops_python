@@ -1,0 +1,22 @@
+{
+    "quiz_1": {
+        "1": {
+            "Qué año es este?": {
+                "Description": "Description of question",
+                "Answers": [
+                    "2019",
+                    "2025",
+                    "2016"
+                ]
+            },
+            "De qué color es el cielo?": {
+                "Description": "Description of question",
+                "Answers": [
+                    "Verde",
+                    "Azul",
+                    "No tiene color"
+                ]
+            }
+        }
+    }
+}
