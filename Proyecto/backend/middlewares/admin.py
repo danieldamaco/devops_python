@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify, g
+from flask import request, jsonify, g
 
 # Token de prueba (en producción, usa JWT)
-ADMIN_TOKEN = g.admin.token
+ADMIN_TOKEN = 'UnTokenSeguro'
 
 # Middleware para verificar el token de administrador
 def admin_required(f):

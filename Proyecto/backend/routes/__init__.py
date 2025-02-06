@@ -53,12 +53,10 @@
 #     elif request.method == "DELETE":
 #         return jsonify({"message": "DELETE: Eliminado con éxito"})
 
-from backend.routes.user_routes import user_bp
 from backend.routes.menu_routes import menu_bp
 from backend.routes.order_routes import order_bp
 
 
 def register_routes(app):
-    app.register_blueprint(user_bp, url_prefix="/api")
     app.register_blueprint(menu_bp, url_prefix="/api")
     app.register_blueprint(order_bp, url_prefix="/api")
