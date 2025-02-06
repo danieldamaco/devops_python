@@ -11,7 +11,7 @@ order_bp = Blueprint("orders", __name__)
 def create_orders():
     """
     Crea la orden recibiendo el nombre del cliente por el cuerpo de la peticio. La informacion es almacenada 
-    en la variable global g.order. 
+    en la base de datos redis. 
     Responde la informacion de la peticion: status y id de la orden. 
     """
     body = request.get_json()
