@@ -11,7 +11,7 @@ menu_bp = Blueprint("menu", __name__)
 def get_menu():
     try:
         menu = redis_client.hgetall("menu")
-        return jsonify({"menu": f'{menu}'})
+        return jsonify({"menu": f'{menu}'}), 200
     except Exception as err:
         return jsonify({"error": f"{err}"})
 
@@ -33,9 +33,9 @@ def change_menu():
 
             pizza_types.append(new_pizza)
             redis_client.hset("menu", mapping={"types": str(pizza_types)})
-            return jsonify({"success": "Nueva pizza agregada con éxito"})
+            return jsonify({"success": "Nueva pizza agregada con éxito"}), 201
         except Exception as err:
-            return jsonify({"error": f'{err}'})
+            return jsonify({"error": f'{err}'}), 400
     elif request.method == 'DELETE':
         print(request.method)
         body = request.get_json()
@@ -50,6 +50,6 @@ def change_menu():
 
             pizza_types.remove(delete_pizza)
             redis_client.hset("menu", mapping={"types": str(pizza_types)})
-            return jsonify({"success": "Pizza eliminada con éxito"})
+            return jsonify({"success": "Pizza eliminada con éxito"}), 200
         except Exception as err:
-            return jsonify({"error": f'{err}'})
+            return jsonify({"error": f'{err}'}), 400

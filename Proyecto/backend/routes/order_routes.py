@@ -14,16 +14,22 @@ def create_orders():
     en la base de datos redis. 
     Responde la informacion de la peticion: status y id de la orden. 
     """
-    body = request.get_json()
-    name = body.get("name")
-    pizza = body.get("pizza-type")
+    try:
+        body = request.get_json()
+        name = body.get("name")
+        pizza = body.get("pizza-type")
+    except Exception as err:
+        print(err)
+        return jsonify({"error": f"{err}"})
 
-    if not name: return {"error": "Se requiere name en body. "}
-
-    id = uuid.uuid4()
-    redis_client.hset(str(id), mapping={"name": str(name), "status":'created', "pizza":str(pizza)})
-
-    return jsonify({"order":{"status": f'created', "id": f'{id}'}})
+    try:
+        id = uuid.uuid4()
+        redis_client.hset(str(id), mapping={"name": str(name), "status":'created', "pizza":str(pizza)})
+        return jsonify({"order":{"status": f'created', "id": f'{id}'}}), 200
+    except Exception as err:
+        print(err)
+        return jsonify({"error": f"{err}"})
+    
 
 
 @order_bp.route("/orders/<uuid:order_id>", methods=['GET'])
