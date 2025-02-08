@@ -14,11 +14,6 @@ parser.add_argument('-n', help='Your name')
 
 args = parser.parse_args()
 conn = http.client.HTTPConnection('127.0.0.1', 5000)
-headers = {
-    'Content-Type': "application/json",
-    'Accept': "application/json",
-    'Authorization': f'Bearer '
-    }
 
 if args.create:
     #Necesito name y tipo de pizza como body: es a /orders en POST. Recibo JSON de error o de order con: (name, status, pizza)
