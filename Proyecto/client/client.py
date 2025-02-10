@@ -19,15 +19,19 @@ if args.create:
     #Necesito name y tipo de pizza como body: es a /orders en POST. Recibo JSON de error o de order con: (name, status, pizza)
     body = {"name": f'{args.n}', "pizza-type": f'{args.create}'}
     body = json.dumps(body)
+    headers = {
+            'Content-Type': "application/json",
+            'Accept': "application/json",
+        }
     try:
-        conn.request("POST", '/api/orders', body=body)
+        conn.request("POST", '/api/orders', body=body, headers=headers)
         res = conn.getresponse()
         data = res.read()
 
         data_parsed = json.loads(data.decode('utf-8'))
         print(f' El id es: {data_parsed['order']['id']}')
     except Exception as err:
-        print(err)
+        print("Error:", err)
 
 elif args.menu:
      #Necesito name y tipo de pizza como body: es a /orders en POST. Recibo JSON de error o de order con: (name, status, pizza)
@@ -56,7 +60,7 @@ elif args.status:
 elif args.add_pizza:
     try:
         if not args.admin: raise Exception("Accion solo para adminsitradores.")
-        body = {"name": f'{args.n}', "new_pizza": f'{args.add_pizza}'}
+        body = {"new_pizza": f'{args.add_pizza}'}
         body = json.dumps(body)
         headers = {
             'Content-Type': "application/json",
@@ -75,12 +79,11 @@ elif args.add_pizza:
         print(err)
 
 elif args.delete_pizza:
-    print('estoy en delete_pizza')
     #Verificar si esta la flag de admin. Y mandar para saber si es correcta. 
     #Necesito admin token. En el body necesito delete_pizza. Recibo mensaje de success
     try:
         if not args.admin: raise Exception("Accion solo para adminsitradores.")
-        body = {"name": f'{args.n}', "delete_pizza": f'{args.delete_pizza}'}
+        body = {"delete_pizza": f'{args.delete_pizza}'}
         body = json.dumps(body)
         headers = {
             'Content-Type': "application/json",
@@ -88,7 +91,7 @@ elif args.delete_pizza:
             'Authorization': f'Bearer {args.admin}'
         }
 
-        conn.request("POST", f'/api/menu', body=body, headers=headers)
+        conn.request("DELETE", f'/api/menu', body=body, headers=headers)
         res = conn.getresponse()
         data = res.read()
 
